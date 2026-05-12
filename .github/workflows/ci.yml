@@ -1,0 +1,31 @@
+name: Sonar + Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  scan-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sonar Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=plutoaintaplanet
+            -Dsonar.projectKey=Plutoaintaplanet_hocr
+
+      - name: Quality Gate
+        uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Build Docker
+        run: docker build -t horc:${{ github.sha }} .
