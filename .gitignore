@@ -7,3 +7,4 @@ src/__pycache__
 src/model
 src/tmp
 src/transcriptions
+jenkins.war
